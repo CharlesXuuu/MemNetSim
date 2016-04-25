@@ -1,32 +1,32 @@
 package sim.queue;
 
 /**                        
-* Project: Queueing Model Simulation                                       
-* Module ID: Pessenger
+* Project: MemNet Simulation                                       
+* Module ID: Job
 * JDK version used: <JDK1.7>                            
 * Author: Charles Xu                        
-* Create Date: 2014-03-11
+* Create Date: 2016-03-11
 * Version: 1.0             
 * 
-* Comments:  This class is a representation for each passenger, it contains passengers' attribute and actions
+* Comments:  This class is a representation for each job, it contains jobs' attributes and actions
 * 
 */ 
 
 
-public class Pessenger {
+public class Job {
 	
-  private final static int CANADIAN = 0; 
-  private final static int VISITOR = 1;
+  private final static int TYPE0 = 0; 
+  private final static int TYPE1 = 1;
   
   private Integer id;
-  private Integer type; //Define the type of this passenger
-  private float arrivingTime;// Define the arriving time of this passenger
-  private float servingTime;// Define the serving time of this passenger
-  private float servingLength;// Define the serving length of this passenger
-  private float leavingTime;// Define the laving time of this passenger
+  private Integer type; //Define the type of this job
+  private float arrivingTime;// Define the arriving time of this job
+  private float servingTime;// Define the serving time of this job
+  private float servingLength;// Define the serving length of this job
+  private float leavingTime;// Define the leaving time of this job
   private boolean served;
 
-  public Pessenger(Integer id, Integer type, float landingTime){
+  public Job(Integer id, Integer type, float landingTime){
 	  this.id = id;
 	  this.type = type;
 	  
@@ -88,10 +88,10 @@ public void setIsServed(boolean b) {
 }
 
 
-public static void myprint(Pessenger[] myPessenger, Integer numPessenger) {
+public static void myprint(Job[] myJobs, Integer numJobs) {
 	// TODO Auto-generated method stub
-	for (int i=0;i<numPessenger;i++){
-		System.out.println("id:"+i+"\ttype:"+myPessenger[i].getType()+"\tArrivingTime:"+myPessenger[i].getArrivingTime()+"\tServingTime:"+myPessenger[i].getServingTime()+"\tServingLength:"+myPessenger[i].getServingLength()+"\tLeavingTime:"+myPessenger[i].getLeavingTime()+"\n");
+	for (int i=0;i<numJobs;i++){
+		System.out.println("id:"+i+"\ttype:"+myJobs[i].getType()+"\tArrivingTime:"+myJobs[i].getArrivingTime()+"\tServingTime:"+myJobs[i].getServingTime()+"\tServingLength:"+myJobs[i].getServingLength()+"\tLeavingTime:"+myJobs[i].getLeavingTime()+"\n");
 	}
 }
 

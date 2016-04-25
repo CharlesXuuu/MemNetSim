@@ -1,14 +1,14 @@
 package sim.queue;
 
 /**                        
-* Project: Queueing Model Simulation                                       
+* Project: MemNet Simulation                                       
 * Module ID: Waiting Queue
 * JDK version used: <JDK1.7>                            
 * Author: Charles Xu                        
-* Create Date: 2014-03-11
+* Create Date: 2016-03-11
 * Version: 1.0             
 * 
-* Comments:  This class is a representation for each waiting queue, it contains queues' attribute and actions
+* Comments:  This class is a representation for each waiting queue, it contains queues' attributes and actions
 * 
 */
 
@@ -21,7 +21,7 @@ public class WaitingQueue {
  
   public Integer id;
   public Integer curNum; // Define the current number of this queue
-  private Integer type; // Define if this queue is for the specific agent or for specific type of passenger
+  private Integer type; // Define if this queue is for the specific processor or for specific type of job
   private ArrayDeque<Integer> data = new ArrayDeque<Integer>();
 
   public WaitingQueue(Integer id, Integer type){
@@ -31,8 +31,8 @@ public class WaitingQueue {
   }
   
   
-  public void add(Integer pessengerId) {
-	  data.add(pessengerId);
+  public void add(Integer jobId) {
+	  data.add(jobId);
 	  curNum += 1;
   }
 
@@ -44,10 +44,10 @@ public class WaitingQueue {
 
 /** 
 * FunName: getShortestQueue
-* Description: This function compares and gets the shortest queue for specific type of passenger
+* Description: This function compares and gets the shortest queue for specific type of job
 * @param: myWaitingQueue					The waiting queue
 * @param: numQueue							The number of all waiting queue
-* @param: type								The passenger type
+* @param: type								The job type
 * @return: tempid							The shortest queue id
 */ 
 public static Integer getShortestQueue(WaitingQueue[] myWaitingQueue, Integer numQueue,

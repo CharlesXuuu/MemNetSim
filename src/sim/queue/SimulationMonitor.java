@@ -5,7 +5,7 @@ package sim.queue;
 * Module ID: Simulation Monitor
 * JDK version used: <JDK1.7>                            
 * Author: Charles Xu                        
-* Create Date: 2014-03-12
+* Create Date: 2016-03-12
 * Version: 1.0             
 * 
 * Comments:  This class performs the whole simulation process, it is designed using event-driven strategy, 
@@ -55,14 +55,14 @@ public class SimulationMonitor {
 	private Integer numQueue; // The queue number
 	
 	 
-	private Pessenger[] myPessenger;
+	private Job[] myPessenger;
 	private WaitingQueue[] myWaitingQueue;
-	private Agent[] myAgent;
+	private Processor[] myAgent;
 
 	
 	/** 
 	* FunName: generatePessenger
-	* Description: This function generate pessenger from the random number file provided in the course page  
+	* Description: This function generate passenger from the random number file provided in the course page  
 	*/ 
 	private void generatePessenger() {
 
@@ -71,7 +71,7 @@ public class SimulationMonitor {
 		if (file.exists()) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				myPessenger = new Pessenger[numPessenger];
+				myPessenger = new Job[numPessenger];
 				Integer type;
 				float landingTime;
 				float servingLength;
@@ -94,7 +94,7 @@ public class SimulationMonitor {
 					//set the landing time
 					landingTime = i
 							* ((float) arrivingPeriod / (float) numPessenger);
-					myPessenger[i] = new Pessenger(i, type, landingTime);
+					myPessenger[i] = new Job(i, type, landingTime);
 				}
 				for (int i=0; i<numPessenger; i++){
 					// use another random number to decide the serving length  
@@ -146,13 +146,13 @@ public class SimulationMonitor {
 			myWaitingQueue[0] = new WaitingQueue(0, CANADIAN);
 			myWaitingQueue[1] = new WaitingQueue(1, VISITOR);
 			// setting agent 
-			myAgent = new Agent[numAgent];
+			myAgent = new Processor[numAgent];
 
 			for (int i = 0; i < numAgent; i++) {
 				if (i < numCanadianAgent) {
-					myAgent[i] = new Agent(i, CANADIAN, 0);
+					myAgent[i] = new Processor(i, CANADIAN, 0);
 				} else {
-					myAgent[i] = new Agent(i, VISITOR, 1);
+					myAgent[i] = new Processor(i, VISITOR, 1);
 				}
 			}
 		}
@@ -161,14 +161,14 @@ public class SimulationMonitor {
 		if (strategy == DISTRIBUTE16) {
 			numQueue = numAgent;
 			myWaitingQueue = new WaitingQueue[numQueue];
-			myAgent = new Agent[numAgent];
+			myAgent = new Processor[numAgent];
 			//setting queue and agent
 			for (int i = 0; i < numAgent; i++) {
 				if (i < numCanadianAgent) {
-					myAgent[i] = new Agent(i, CANADIAN, i);
+					myAgent[i] = new Processor(i, CANADIAN, i);
 					myWaitingQueue[i] = new WaitingQueue(i, CANADIAN);
 				} else {
-					myAgent[i] = new Agent(i, VISITOR, i);
+					myAgent[i] = new Processor(i, VISITOR, i);
 					myWaitingQueue[i] = new WaitingQueue(i, VISITOR);
 				}
 			}
@@ -195,11 +195,11 @@ public class SimulationMonitor {
 		}
 		
 		//get the id of the next finished Canadian agent 
-		Integer nextCanadianAgentId = Agent.getNextFinishingAgent(myWaitingQueue, myAgent, numAgent, CANADIAN).get("id");
+		Integer nextCanadianAgentId = Processor.getNextFinishingProcessor(myWaitingQueue, myAgent, numAgent, CANADIAN).get("id");
 		//get the finishing event time
 		float nextCanadianServingEventTime =  myAgent[nextCanadianAgentId].getNextfinishingTime(); 
 		//get the id of the next finished Visitor agent
-		Integer nextVisitorAgentId = Agent.getNextFinishingAgent(myWaitingQueue, myAgent, numAgent, VISITOR).get("id");
+		Integer nextVisitorAgentId = Processor.getNextFinishingProcessor(myWaitingQueue, myAgent, numAgent, VISITOR).get("id");
 		//get the finishing event time
 		float nextVisitorServingEventTime =  myAgent[nextVisitorAgentId].getNextfinishingTime();
         
@@ -254,7 +254,7 @@ public class SimulationMonitor {
 			
 		case ARRIVING:
 			//if there is an idle agent then find the idle agent
-			Integer targetAgent = Agent.getIdleAgent(myAgent, numAgent, myPessenger[curArriving].getType(), myPessenger[curArriving].getArrivingTime());
+			Integer targetAgent = Processor.getIdleProcessor(myAgent, numAgent, myPessenger[curArriving].getType(), myPessenger[curArriving].getArrivingTime());
 			if (targetAgent == null){
 			//if not, find the shortest queue of its type
 			Integer shortestQueueId = WaitingQueue.getShortestQueue(myWaitingQueue, numQueue, myPessenger[curArriving].getType());
@@ -276,7 +276,7 @@ public class SimulationMonitor {
 		//check if the simulation still goes on
 		//System.out.println("servedPessenger = "+ servedPessenger +"\n");
 		if (servedPessenger >= numPessenger){
-			Pessenger.myprint(myPessenger, numPessenger);
+			Job.myprint(myPessenger, numPessenger);
 			return;
 		}
 	  }
@@ -327,7 +327,7 @@ public class SimulationMonitor {
 		sm.simulation();
 		System.out.println("numCandianAgent = "+ sm.numCanadianAgent +"\t" + "numVisitorAgent = " + sm.numVisitorAgent+ "\n");
 		// output the result
-		SimulationAnalyzer.analyzePessenger(sm.myPessenger, sm.numPessenger);
+		SimulationAnalyzer.analyzeJob(sm.myPessenger, sm.numPessenger);
 
 	}
 
