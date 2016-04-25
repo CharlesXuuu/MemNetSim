@@ -11,12 +11,12 @@ package sim.queue;
 * Comments:  This class performs the whole simulation process, it is designed using event-driven strategy, 
 * and it contains the main functions, the process is mainly in four steps:
 * 
-* 1. Generating the passenger, the queue and the agent
+* 1. Generating the processor, the queue and the job
 * 2. Setting the simulation strategy, is either 2-queue strategy or 16-queue strategy.
-* 3. Begin simulation, monitor the discrete event, currently there are three events: (1). Arriving Event (2). Canadian Agent finishing Event
-* 		(3). Visitor Agent finishing event. All events will be handled in different ways.
+* 3. Begin simulation, monitor the discrete event, currently there are three events: (1). Arriving Event (2). Type0 job finishing Event
+* 		(3). Type1 job finishing event. All events will be handled in different ways.
 *                                             
-* The simulation class has high adaptivity to simulate different number of agents, passenger and queues. 
+* The simulation class has high adaptivity to simulate different number of processors, jobs and queues. 
 */ 
 
 
