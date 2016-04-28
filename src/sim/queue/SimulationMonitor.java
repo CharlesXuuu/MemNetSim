@@ -63,8 +63,8 @@ public class SimulationMonitor {
 
 	
 	/** 
-	* FunName: generatePessenger
-	* Description: This function generate passenger from the random number file provided in the course page  
+	* FunName: generateJob
+	* Description: This function generate job from the random number file provided 
 	*/ 
 	private void generateJob() {
 
@@ -146,10 +146,10 @@ public class SimulationMonitor {
 	
 	/** 
 	* FunName: genServingLength
-	* Description: This function using a random number to generate the serving length for passengers
+	* Description: This function using a random number to generate the serving length for jobs
 	* @param: randomNumber		The required random number
 	* @param: alpha				The average service length in exponential distribution
-	* @return: servingLength	The serving time length for each passenger
+	* @return: servingLength	The serving time length for each job
 	*/ 
 	private float genServingLength(int randomNumber, int alpha) {
 		// TODO Auto-generated method stub
@@ -222,8 +222,8 @@ public class SimulationMonitor {
 	* Description: This function simulates the whole process, it monitors the discrete event and perform the corresponding actions on these events
 	*/ 
 	private void simulation() {
-	  Integer curArriving = 0;  //current arriving passenger id 
-	  Integer servedPessenger = 0; //number of passengers who have been served
+	  Integer curArriving = 0;  //current arriving job id 
+	  Integer servedJob = 0; //number of jobs who have been served
 	  while(true){		
 		//ceaselessly looking for the next event	  
 		//Categories:1. join queue, 2. finishing service
@@ -231,14 +231,14 @@ public class SimulationMonitor {
 		if (curArriving <numJob){
 			nextArrivingEventTime = myJob[curArriving].getArrivingTime();}
 		else{
-			nextArrivingEventTime = Float.MAX_VALUE;// all passenger are arrived
+			nextArrivingEventTime = Float.MAX_VALUE;// all job are arrived
 		}
 		
-		//get the id of the next finished type0 
+		//get the id of the next finished type0 processor
 		Integer nextType0ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type0).get("id");
 		//get the finishing event time
 		float nextType0FinishServingEventTime =  myProcessor[nextType0ProcessorId].getNextfinishingTime(); 
-		//get the id of the next finished Visitor agent
+		//get the id of the next finished type1 processor
 		Integer nextType1ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type1).get("id");
 		//get the finishing event time
 		float nextType1FinishServingEventTime =  myProcessor[nextType1ProcessorId].getNextfinishingTime();
@@ -249,73 +249,73 @@ public class SimulationMonitor {
         //doing the corresponding processing
 		switch(event){
 		case Type0:		
-			Integer servedCanadian = null;
+			Integer servedType0 = null;
 			
 			if (myWaitingQueue[myProcessor[nextType0ProcessorId].getQueueOfInterest()].getCurNum()!=0){
-				// if this agent's corresponding queue is not empty, then pop the first Canadian passenger and process it
-				servedCanadian = myWaitingQueue[myProcessor[nextType0ProcessorId].getQueueOfInterest()].pop();
+				// if this agent's corresponding queue is not empty, then pop the first Type0 and process it
+				servedType0 = myWaitingQueue[myProcessor[nextType0ProcessorId].getQueueOfInterest()].pop();
 				}
 			
-			if (servedCanadian==null){
-				// if this agent's corresponding queue is empty, then the agent remains idle and finish the processing
+			if (servedType0==null){
+				// if this processor's corresponding queue is empty, then the processor remains idle and finish the processing
 				myProcessor[nextType0ProcessorId].setNextfinishingTime(Float.MAX_VALUE);
 			break;
 			}else{
-				// update the state for both agent and passenger
-				float finalTime = myProcessor[nextType0ProcessorId].getNextfinishingTime() + myJob[servedCanadian].getServingLength();
-				myJob[servedCanadian].setServingTime(myProcessor[nextType0ProcessorId].getNextfinishingTime());
-				myJob[servedCanadian].setLeavingTime(finalTime);
-				myJob[servedCanadian].setIsServed(true);
+				// update the state for both type0 job and processor
+				float finalTime = myProcessor[nextType0ProcessorId].getNextfinishingTime() + myJob[servedType0].getServingLength();
+				myJob[servedType0].setServingTime(myProcessor[nextType0ProcessorId].getNextfinishingTime());
+				myJob[servedType0].setLeavingTime(finalTime);
+				myJob[servedType0].setIsServed(true);
 				myProcessor[nextType0ProcessorId].setNextfinishingTime(finalTime);
-				servedPessenger += 1;
+				servedJob += 1;
 				break;
 			}
 			
 		case Type1:
-			Integer servedVisitor = null;
+			Integer servedType1 = null;
 			if (myWaitingQueue[myProcessor[nextType1ProcessorId].getQueueOfInterest()].getCurNum()!=0){
-				// if this agent's corresponding queue is not empty, then pop the first visitor passenger and process it
-				servedVisitor = myWaitingQueue[myProcessor[nextType1ProcessorId].getQueueOfInterest()].pop();
+				// if this processor's corresponding queue is not empty, then pop the first type1 job and process it
+				servedType1 = myWaitingQueue[myProcessor[nextType1ProcessorId].getQueueOfInterest()].pop();
 			}
-			if (servedVisitor==null){
+			if (servedType1==null){
 				// if this agent's corresponding queue is empty, then the agent remains idle and finish the processing
 				myProcessor[nextType1ProcessorId].setNextfinishingTime(Float.MAX_VALUE);
 			break;
 			}else{
-				// update the state of both agent and passenger
-				float finalTime = myProcessor[nextType1ProcessorId].getNextfinishingTime() + myJob[servedVisitor].getServingLength();
-				myJob[servedVisitor].setServingTime(myProcessor[nextType1ProcessorId].getNextfinishingTime());
-				myJob[servedVisitor].setLeavingTime(finalTime);				
-				myJob[servedVisitor].setIsServed(true);
+				// update the state of both type1 job and processor
+				float finalTime = myProcessor[nextType1ProcessorId].getNextfinishingTime() + myJob[servedType1].getServingLength();
+				myJob[servedType1].setServingTime(myProcessor[nextType1ProcessorId].getNextfinishingTime());
+				myJob[servedType1].setLeavingTime(finalTime);				
+				myJob[servedType1].setIsServed(true);
 				myProcessor[nextType1ProcessorId].setNextfinishingTime(finalTime);
-				servedPessenger += 1;
+				servedJob += 1;
 				break;
 			}
 			
 		case ARRIVING:
-			//if there is an idle agent then find the idle agent
-			Integer targetAgent = Processor.getIdleProcessor(myProcessor, numProcessor, myJob[curArriving].getType(), myJob[curArriving].getArrivingTime());
-			if (targetAgent == null){
+			//if there is an idle processor then find the idle processor
+			Integer targetProcessor = Processor.getIdleProcessor(myProcessor, numProcessor, myJob[curArriving].getType(), myJob[curArriving].getArrivingTime());
+			if (targetProcessor == null){
 			//if not, find the shortest queue of its type
 			Integer shortestQueueId = WaitingQueue.getShortestQueue(myWaitingQueue, numQueue, myJob[curArriving].getType());
 			myWaitingQueue[shortestQueueId].add(curArriving);
 			curArriving += 1;
 			break;
-			}else{//update the state of both agent and passenger	
+			}else{//update the state of both job and processor	
 				float finalTime = myJob[curArriving].getArrivingTime() + myJob[curArriving].getServingLength();
 				System.out.println("finalTime:"+finalTime);
 				myJob[curArriving].setServingTime(myJob[curArriving].getArrivingTime());
 				myJob[curArriving].setLeavingTime(finalTime);
 				myJob[curArriving].setIsServed(true);
-				myProcessor[targetAgent].setNextfinishingTime(finalTime);
-				servedPessenger += 1;
+				myProcessor[targetProcessor].setNextfinishingTime(finalTime);
+				servedJob += 1;
 				curArriving += 1;
 				break;
 			}
 		}
 		//check if the simulation still goes on
-		//System.out.println("servedPessenger = "+ servedPessenger +"\n");
-		if (servedPessenger >= numJob){
+		//System.out.println("servedJob = "+ servedJob +"\n");
+		if (servedJob >= numJob){
 			Job.myprint(myJob, numJob);
 			return;
 		}
