@@ -327,26 +327,26 @@ public class SimulationMonitor {
 	* FunName: getNextEvent
 	* Description: This function compares and gets the nearest event
 	* @param: nextArrivingEventTime				The nearest arriving event time
-	* @param: nextCanadianServingEventTime		The nearest Canadian agent finishing event time
-	* @param: nextVisitorServingEventTime		The nearest Visitor agent finishing event time
+	* @param: nextType0ServingEventTime		The nearest Type0 Processor finishing event time
+	* @param: nextType1ServingEventTime		The nearest Type1 Processor finishing event time
 	* @return: Eventid							The nearest event id
 	*/ 
 	private int getNextEvent(float nextArrivingEventTime,
-		float nextCanadianServingEventTime, float nextVisitorServingEventTime) {
+		float nextType0ServingEventTime, float nextType1ServingEventTime) {
 	
 	// if no more arriving event happens 	
 	if (nextArrivingEventTime == Float.MAX_VALUE){
-		//only compare the agent finishing event
-		if (nextCanadianServingEventTime <= nextVisitorServingEventTime){ 
+		//only compare the job finishing event
+		if (nextType0ServingEventTime <= nextType1ServingEventTime){ 
 			return Type0;}
 		else{return Type1; }
 	}
 	
 	//compare three kind of events
-	if (nextArrivingEventTime <= nextCanadianServingEventTime && nextArrivingEventTime<=nextVisitorServingEventTime){
+	if (nextArrivingEventTime <= nextType0ServingEventTime && nextArrivingEventTime<=nextType1ServingEventTime){
 		return ARRIVING;
 	}else{ 
-		if (nextCanadianServingEventTime <= nextVisitorServingEventTime){ 
+		if (nextType0ServingEventTime <= nextType1ServingEventTime){ 
 			return Type0;}
 		else{return Type1; }
 		}
