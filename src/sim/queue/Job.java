@@ -36,7 +36,15 @@ public class Job {
   }
   
   
-  public void joinQueue() {
+  public Job(Integer id, Integer type) {
+	  this.id = id;
+	  this.type = type;
+	  
+	  this.served = false;
+}
+
+
+public void joinQueue() {
   }
 
   public float getArrivingTime(){
