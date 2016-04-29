@@ -60,7 +60,20 @@ public class SimulationMonitor {
 	private Processor[] myProcessor;
 
 
-
+	/**
+	 * FunName: setAvgProcessTime
+	 * Description: This function adjust the memspace and return the updated avgTime
+	 * @param avgTime 	the original avgTime
+	 * @param memspace 	memnet space size
+	 * @param k 		platform related coefficient k
+	 * @param b			platform related coefficient b
+	 * @return			updated avgTime
+	 */
+	private int setAvgProcessTime(float avgTime, float memspace, float k, float b){
+		return (int)(k * avgTime / memspace + b );
+	}
+	
+	
 	
 	/** 
 	* FunName: generateJob
