@@ -19,7 +19,7 @@ public class SimulationAnalyzer {
 * @param: myPessenger			The job array
 * @param: numPessenger			The number of jobs
 */ 
-public static void analyzeJob(Job[] myJob, Integer numJob) {
+public static float analyzeJob(Job[] myJob, Integer numJob) {
 	// TODO Auto-generated method stub
 	float totalResponseTime=0;
 	float meanResponseTime;
@@ -28,6 +28,7 @@ public static void analyzeJob(Job[] myJob, Integer numJob) {
 	}
 	meanResponseTime = totalResponseTime / numJob;
 	System.out.println("meanResponseTime = " + meanResponseTime + "\n");
+	return meanResponseTime;
 }
 
 }

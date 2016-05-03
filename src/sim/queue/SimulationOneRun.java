@@ -27,38 +27,47 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Vector;
 
 
-public class SimulationMonitor {
+public class SimulationOneRun {
+	
+	public File inputFile; // The random number input file
+	public String filePath = "res/";
+	public String fileName = "rdnumber.txt";
+	
+	public static final Integer CENTER2 = 0; //Define the first strategy
+	public static final Integer DISTRIBUTE16 = 1; //Define the second strategy
 
-	private static final Integer CENTER2 = 0; //Define the first strategy
-	private static final Integer DISTRIBUTE16 = 1; //Define the second strategy
-
-	private static final int Type0 = 0; //Define the type0 job, and their processing event  
-	private static final int Type1 = 1;  //Define the type1 job, and their processing event
-	private static final int ARRIVING = 2; //Define the arriving event
-	private static final int avgTimeType0 = 40; // Average time for processing a Type0 job
-	private static final int avgTimeType1 = 75; // Average time for processing a Type1 job
-
-	private File inputFile; // The random number input file
-	private String filePath = "res/";
-	private String fileName = "rdnumber.txt";
+	/**！ adjust ratio and number of processors*/
+	
+	public static final int Type0 = 0; //Define the type0 job, and their processing event  
+	public static final int Type1 = 1;  //Define the type1 job, and their processing event
+	public static final int ARRIVING = 2; //Define the arriving event
+	public static final int avgTimeType0 = 40; // Average time for processing a Type0 job
+	public static final int avgTimeType1 = 75; // Average time for processing a Type1 job
+	public static final double ratio = 1; // ratio of Type0 Job
+	
+	
 
 	// Simulation Parameters
-	private Integer strategy = CENTER2;  //The default strategy
-	private Integer arrivingPeriod =  20 * 60; //The arriving period
-	private Integer numJob = 100; //The default job number
-	private Integer numProcessor = 16; // The total processor number
-	private Integer numType0Processor = 9;  // The type0 processor number
-	private Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
-	private Integer numQueue; // The queue number
-	private Integer avgTimeArriving = 80; //Average Interarrival time for Poisson distribution
+	public Integer strategy = CENTER2;  //The default strategy
+	public Integer arrivingPeriod =  20 * 60; //The arriving period
+	public Integer numJob = 100; //The default job number
+	public Integer numProcessor = 16; // The total processor number
+	public Integer numType0Processor = 16;  // The type0 processor number
+	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
+	public Integer numQueue; // The queue number
+	public Integer avgTimeArriving = 80; //Average Interarrival time for Poisson distribution
 	 
-	private Job[] myJob;
+	public Job[] myJob;
 	private WaitingQueue[] myWaitingQueue;
 	private Processor[] myProcessor;
 
+	private float coefficient_k= (float)113.24;
+	private float coefficient_b= (float)31.46;
 
 	/**
 	 * FunName: setAvgProcessTime
@@ -69,8 +78,8 @@ public class SimulationMonitor {
 	 * @param b			platform related coefficient b
 	 * @return			updated avgTime
 	 */
-	private int setAvgProcessTime(float avgTime, float memspace, float k, float b){
-		return (int)(k * avgTime / memspace + b );
+	public int setAvgProcessTime(float avgTime, float memspace){
+		return (int)(this.coefficient_k * avgTime / memspace + this.coefficient_b );
 	}
 	
 	
@@ -79,7 +88,7 @@ public class SimulationMonitor {
 	* FunName: generateJob
 	* Description: This function generate job from the random number file provided 
 	*/ 
-	private void generateJob() {
+	void generateJob() {
 
 		File file = new File(filePath, fileName);
 		int randomNumber;
@@ -100,7 +109,7 @@ public class SimulationMonitor {
 							"\\s", ""));
 
 					// decide if the Job is type0 or type1
-					if (randomNumber <= 6500) {
+					if (randomNumber <= (10000*this.ratio)) {
 						type = Type0;
 					} else {
 						type = Type1;
@@ -189,7 +198,7 @@ public class SimulationMonitor {
 	* Description: This function set the simulation strategy
 	* @param: strategy		The strategy is either CENTER2 or DISTRIBUTED16 
 	*/ 
-	private void setStrategy(Integer strategy) {
+	void setStrategy(Integer strategy) {
 
 		// the first strategy
 		if (strategy == CENTER2) {
@@ -234,7 +243,7 @@ public class SimulationMonitor {
 	* FunName: simulation
 	* Description: This function simulates the whole process, it monitors the discrete event and perform the corresponding actions on these events
 	*/ 
-	private void simulation() {
+	void simulation() {
 	  Integer curArriving = 0;  //current arriving job id 
 	  Integer servedJob = 0; //number of jobs who have been served
 	  while(true){		
@@ -247,15 +256,31 @@ public class SimulationMonitor {
 			nextArrivingEventTime = Float.MAX_VALUE;// all job are arrived
 		}
 		
+		float nextType0FinishServingEventTime;
+		float nextType1FinishServingEventTime;
+		Integer nextType0ProcessorId;
+		Integer nextType1ProcessorId;
+		
+		if(numType0Processor>0){
 		//get the id of the next finished type0 processor
-		Integer nextType0ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type0).get("id");
+		nextType0ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type0).get("id");
 		//get the finishing event time
-		float nextType0FinishServingEventTime =  myProcessor[nextType0ProcessorId].getNextfinishingTime(); 
+		nextType0FinishServingEventTime =  myProcessor[nextType0ProcessorId].getNextfinishingTime(); 
+		}else{
+		nextType0ProcessorId = null;
+		nextType0FinishServingEventTime = Float.MAX_VALUE; 	
+		}
+		
+		if(numType1Processor>0){
 		//get the id of the next finished type1 processor
-		Integer nextType1ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type1).get("id");
+		nextType1ProcessorId = Processor.getNextFinishingProcessor(myWaitingQueue, myProcessor, numProcessor, Type1).get("id");
 		//get the finishing event time
-		float nextType1FinishServingEventTime =  myProcessor[nextType1ProcessorId].getNextfinishingTime();
-        
+		nextType1FinishServingEventTime =  myProcessor[nextType1ProcessorId].getNextfinishingTime();
+		}else{
+		nextType1ProcessorId = null;
+		nextType1FinishServingEventTime = Float.MAX_VALUE;	
+		}
+		
 		//compare and get the nearest event 
 		int event = getNextEvent(nextArrivingEventTime, nextType0FinishServingEventTime, nextType1FinishServingEventTime);
 
@@ -316,7 +341,7 @@ public class SimulationMonitor {
 			break;
 			}else{//update the state of both job and processor	
 				float finalTime = myJob[curArriving].getArrivingTime() + myJob[curArriving].getServingLength();
-				System.out.println("finalTime:"+finalTime);
+				//System.out.println("finalTime:"+finalTime);
 				myJob[curArriving].setServingTime(myJob[curArriving].getArrivingTime());
 				myJob[curArriving].setLeavingTime(finalTime);
 				myJob[curArriving].setIsServed(true);
@@ -329,7 +354,7 @@ public class SimulationMonitor {
 		//check if the simulation still goes on
 		//System.out.println("servedJob = "+ servedJob +"\n");
 		if (servedJob >= numJob){
-			Job.myprint(myJob, numJob);
+			//Job.myprint(myJob, numJob);
 			return;
 		}
 	  }
@@ -346,8 +371,8 @@ public class SimulationMonitor {
 	*/ 
 	private int getNextEvent(float nextArrivingEventTime,
 		float nextType0ServingEventTime, float nextType1ServingEventTime) {
-	
 	// if no more arriving event happens 	
+	//System.out.println(""+nextArrivingEventTime+"\t"+nextType0ServingEventTime+"\t"+nextType1ServingEventTime+"\n");
 	if (nextArrivingEventTime == Float.MAX_VALUE){
 		//only compare the job finishing event
 		if (nextType0ServingEventTime <= nextType1ServingEventTime){ 
@@ -363,25 +388,19 @@ public class SimulationMonitor {
 			return Type0;}
 		else{return Type1; }
 		}
-}
-	/** 
-	* FunName: main
-	* Description: Main function 
-	* @param: command line parameter			
-	*/ 
-	public static void main(String argv[]) {
-		SimulationMonitor sm = new SimulationMonitor();
-		// generate passenger
-		sm.generateJob();
-		// set strategy
-		//sm.setStrategy(DISTRIBUTE16);
-		sm.setStrategy(CENTER2);
-		// doing simulation
-		sm.simulation();
-		System.out.println("numCandianAgent = "+ sm.numType0Processor +"\t" + "numVisitorAgent = " + sm.numType1Processor+ "\n");
-		// output the result
-		SimulationAnalyzer.analyzeJob(sm.myJob, sm.numJob);
-
 	}
+
+/*	
+	private int getNextEvent(float nextArrivingEventTime,
+			float nextType0ServingEventTime, float nextType1ServingEventTime) {
+		HashMap h = new HashMap<Integer, Float>();
+		h.put(ARRIVING,nextArrivingEventTime);
+		h.put(Type0,nextType0ServingEventTime);
+		h.put(Type1,nextType1ServingEventTime);
+		Math.min(a, b)
+		
+	}
+*/	
+	
 
 }
