@@ -20,6 +20,10 @@ public class Simulation {
 	* @param: command line parameter			
 	*/ 
 	public static void main(String argv[]) {
+		
+		//QueueAdapter qa = new QueueAdapter(double y, double u, double y_updated);
+		
+		for (int i=0; i<10; i++){
 		SimulationOneRun sm = new SimulationOneRun();
 		// generate passenger
 		sm.generateJob();
@@ -32,19 +36,13 @@ public class Simulation {
 		// output the result
 		float meanResponseTime = SimulationAnalyzer.analyzeJob(sm.myJob, sm.numJob);
 		
-		sm = new SimulationOneRun();
-		// generate passenger
-		sm.generateJob();
-		// set strategy
-		//sm.setStrategy(DISTRIBUTE16);
-		sm.setStrategy(sm.CENTER2);
-		sm.setAvgProcessTime(SimulationOneRun.avgTimeType0, 22);
-		// doing simulation
-		sm.simulation();
-		System.out.println("numCandianAgent = "+ sm.numType0Processor +"\t" + "numVisitorAgent = " + sm.numType1Processor+ "\n");
-		// output the result
-		meanResponseTime = SimulationAnalyzer.analyzeJob(sm.myJob, sm.numJob);
 		
+		
+		float avgTime = sm.calculateAvgProcessTime(SimulationOneRun.avgTimeType0, 1000*i);
+		
+		//System.out.println("avgTime="+avgTimeType0+"\n");
+		SimulationOneRun.setAvgProcessTime(avgTime, SimulationOneRun.Type0);
+		}
 		
 		
 	}

@@ -46,8 +46,8 @@ public class SimulationOneRun {
 	public static final int Type0 = 0; //Define the type0 job, and their processing event  
 	public static final int Type1 = 1;  //Define the type1 job, and their processing event
 	public static final int ARRIVING = 2; //Define the arriving event
-	public static final int avgTimeType0 = 40; // Average time for processing a Type0 job
-	public static final int avgTimeType1 = 75; // Average time for processing a Type1 job
+	public static float avgTimeType0 = 40; // Average time for processing a Type0 job
+	public static float avgTimeType1 = 75; // Average time for processing a Type1 job
 	public static final double ratio = 1; // ratio of Type0 Job
 	
 	
@@ -60,7 +60,7 @@ public class SimulationOneRun {
 	public Integer numType0Processor = 16;  // The type0 processor number
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
 	public Integer numQueue; // The queue number
-	public Integer avgTimeArriving = 80; //Average Interarrival time for Poisson distribution
+	public float avgTimeArriving = 80; //Average Interarrival time for Poisson distribution
 	 
 	public Job[] myJob;
 	private WaitingQueue[] myWaitingQueue;
@@ -70,7 +70,7 @@ public class SimulationOneRun {
 	private float coefficient_b= (float)31.46;
 
 	/**
-	 * FunName: setAvgProcessTime
+	 * FunName: calculateAvgProcessTime
 	 * Description: This function adjust the memspace and return the updated avgTime
 	 * @param avgTime 	the original avgTime
 	 * @param memspace 	memnet space size
@@ -78,10 +78,21 @@ public class SimulationOneRun {
 	 * @param b			platform related coefficient b
 	 * @return			updated avgTime
 	 */
-	public int setAvgProcessTime(float avgTime, float memspace){
-		return (int)(this.coefficient_k * avgTime / memspace + this.coefficient_b );
+	public float calculateAvgProcessTime(float avgTime, float memspace){
+		return this.coefficient_k * avgTime / memspace + this.coefficient_b ;
 	}
 	
+	public static void setAvgProcessTime(float avgTime, int type){
+		if (type==Type0){
+			avgTimeType0 = (int)avgTime;
+			System.out.println("avgTimeType0="+avgTimeType0);
+		}
+		
+		if (type==Type1){
+			avgTimeType1 = (int)avgTime;
+		}
+		
+	}
 	
 	
 	/** 
@@ -159,7 +170,7 @@ public class SimulationOneRun {
 	}
 
 	
-	private float getExpNext(int randomNumber, int alpha) {
+	private float getExpNext(int randomNumber, float alpha) {
 		// TODO Auto-generated method stub
 		float servingLength = (float) (-1 * alpha * Math.log((float)(randomNumber)/10000));
 		return servingLength;
@@ -186,7 +197,7 @@ public class SimulationOneRun {
 	* @param: maxServingLength	The maximum service length in uniform distribution 
 	* @return: servingLength	The serving time length for each job
 	*/ 
-	private float genUniformServingLength(int randomNumber, int maxServingLength) {
+	private float genUniformServingLength(int randomNumber, float maxServingLength) {
 		// TODO Auto-generated method stub
 		float servingLength = (float) (maxServingLength * (float)(randomNumber)/10000);
 		return servingLength;
