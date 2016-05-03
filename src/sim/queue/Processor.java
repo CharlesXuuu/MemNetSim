@@ -23,13 +23,13 @@ public class Processor {
   public Integer type;
   public Boolean isIdle;
   public Integer queueOfInterest;
-  private float nextFinishingTime;
+  private double nextFinishingTime;
   
   public Processor(Integer id, Integer type, Integer queueOfInterest){
 	  this.id = id;
 	  this.type = type;
 	  this.queueOfInterest = queueOfInterest;
-	  this.nextFinishingTime = Float.MAX_VALUE;
+	  this.nextFinishingTime = Double.MAX_VALUE;
   }
 
 /** 
@@ -43,11 +43,11 @@ public class Processor {
 */ 
 public static HashMap<String, Integer> getNextFinishingProcessor(WaitingQueue[] myWaitingQueue, Processor[] myProcessor, Integer numProcessor, Integer type) {
 	// TODO Auto-generated method stub
-	float tempTime = Float.MAX_VALUE; 
+	double tempTime = Double.MAX_VALUE; 
 	Integer tempId = null;
 	
 	for(int i=0; i<numProcessor; i++){// check if there is previously idle agent
-		if (myProcessor[i].type==type && myProcessor[i].nextFinishingTime == Float.MAX_VALUE){
+		if (myProcessor[i].type==type && myProcessor[i].nextFinishingTime == Double.MAX_VALUE){
 			if (myWaitingQueue[myProcessor[i].queueOfInterest].getCurNum()==0) {continue; }
 			tempId = myProcessor[i].id;
 			HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -68,7 +68,7 @@ public static HashMap<String, Integer> getNextFinishingProcessor(WaitingQueue[] 
 	return map;
 }
 
-public float getNextfinishingTime() {
+public double getNextfinishingTime() {
 	// TODO Auto-generated method stub
 	return this.nextFinishingTime;
 }
@@ -78,12 +78,12 @@ public Integer getQueueOfInterest() {
 	return this.queueOfInterest;
 }
 
-public float serve() {
+public double serve() {
 	// TODO Auto-generated method stub
 	return 0;
 }
 
-public void setNextfinishingTime(float nextFinishingTime) {
+public void setNextfinishingTime(double nextFinishingTime) {
 	// TODO Auto-generated method stub
 	this.nextFinishingTime = nextFinishingTime;
 }
@@ -96,13 +96,13 @@ public void setNextfinishingTime(float nextFinishingTime) {
 * @param: arrivingTime		The arriving time of specific job
 * @return: id 				The id of the processor
 */ 
-public static Integer getIdleProcessor(Processor[] myProcessor, Integer numProcessor, Integer type, float arrivingTime) {
+public static Integer getIdleProcessor(Processor[] myProcessor, Integer numProcessor, Integer type, Double arrivingTime) {
 	// TODO Auto-generated method stub
 	for (int i=0;i<numProcessor;i++){
-		if (myProcessor[i].type==type && myProcessor[i].getNextfinishingTime()==Float.MAX_VALUE){//if there is an previously idle agent
+		if (myProcessor[i].type==type && myProcessor[i].getNextfinishingTime()==Double.MAX_VALUE){//if there is an previously idle agent
 			return i;
 		}else{//or if the finishing time is ahead of the arriving time
-			float nextFinishingTime = myProcessor[i].getNextfinishingTime();
+			double nextFinishingTime = myProcessor[i].getNextfinishingTime();
 			if (myProcessor[i].type==type && nextFinishingTime <= arrivingTime){
 				return i;	
 			}

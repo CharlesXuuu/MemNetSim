@@ -19,10 +19,10 @@ public class SimulationAnalyzer {
 * @param: myPessenger			The job array
 * @param: numPessenger			The number of jobs
 */ 
-public static float analyzeJob(Job[] myJob, Integer numJob) {
+public static double analyzeJob(Job[] myJob, Integer numJob) {
 	// TODO Auto-generated method stub
-	float totalResponseTime=0;
-	float meanResponseTime;
+	double totalResponseTime=0;
+	double meanResponseTime;
 	for(int i=0; i<numJob; i++){
 		totalResponseTime = totalResponseTime + (myJob[i].getLeavingTime() - myJob[i].getArrivingTime());
 	}

@@ -20,13 +20,13 @@ public class Job {
   
   private Integer id;
   private Integer type; //Define the type of this job
-  private float arrivingTime;// Define the arriving time of this job
-  private float servingTime;// Define the serving time of this job
-  private float servingLength;// Define the serving length of this job
-  private float leavingTime;// Define the leaving time of this job
+  private double arrivingTime;// Define the arriving time of this job
+  private double servingTime;// Define the serving time of this job
+  private double servingLength;// Define the serving length of this job
+  private double leavingTime;// Define the leaving time of this job
   private boolean served;
 
-  public Job(Integer id, Integer type, float landingTime){
+  public Job(Integer id, Integer type, double landingTime){
 	  this.id = id;
 	  this.type = type;
 	  
@@ -47,28 +47,28 @@ public class Job {
 public void joinQueue() {
   }
 
-  public float getArrivingTime(){
+  public double getArrivingTime(){
 	  return this.arrivingTime;
   }
   
-  public void setArrivingTime(float arrivingTime){
+  public void setArrivingTime(double arrivingTime){
 	  this.arrivingTime = arrivingTime;
   }
   
-  public float getServingTime(){
+  public double getServingTime(){
 	  return this.servingTime;
   }
   
-  public void setServingTime(float servingTime){
+  public void setServingTime(double servingTime){
 	  this.servingTime = servingTime;
   }
   
   
-  public float getLeavingTime(){
+  public double getLeavingTime(){
 	  return this.leavingTime;
   }
   
-  public void setLeavingTime(float leavingTime){
+  public void setLeavingTime(double leavingTime){
 	  this.leavingTime = leavingTime;
   }
   
@@ -78,13 +78,13 @@ public Integer getType() {
 }
 
 
-public void setServingLength(float servingLength) {
+public void setServingLength(double servingLength) {
 	// TODO Auto-generated method stub
 	this.servingLength = servingLength;
 }
 
 
-public float getServingLength() {
+public double getServingLength() {
 	// TODO Auto-generated method stub
 	return this.servingLength;
 }

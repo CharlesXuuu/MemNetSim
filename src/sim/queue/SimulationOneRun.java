@@ -46,8 +46,8 @@ public class SimulationOneRun {
 	public static final int Type0 = 0; //Define the type0 job, and their processing event  
 	public static final int Type1 = 1;  //Define the type1 job, and their processing event
 	public static final int ARRIVING = 2; //Define the arriving event
-	public static float avgTimeType0 = 40; // Average time for processing a Type0 job
-	public static float avgTimeType1 = 75; // Average time for processing a Type1 job
+	public static double avgTimeType0 = 6; // Average time for processing a Type0 job
+	public static double avgTimeType1 = 75; // Average time for processing a Type1 job
 	public static final double ratio = 1; // ratio of Type0 Job
 	
 	
@@ -60,14 +60,19 @@ public class SimulationOneRun {
 	public Integer numType0Processor = 16;  // The type0 processor number
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
 	public Integer numQueue; // The queue number
-	public float avgTimeArriving = 80; //Average Interarrival time for Poisson distribution
+	public double avgTimeArriving = 15; //Average Interarrival time for Poisson distribution
 	 
 	public Job[] myJob;
 	private WaitingQueue[] myWaitingQueue;
 	private Processor[] myProcessor;
 
-	private float coefficient_k= (float)113.24;
-	private float coefficient_b= (float)31.46;
+	private double coefficient_k= (Double)20.0; //113.24;
+	private double coefficient_b= (Double)4.0;  //31.46;
+	private double memory;
+	
+	public SimulationOneRun(double init_m) {
+		this.memory = init_m;   //
+	}
 
 	/**
 	 * FunName: calculateAvgProcessTime
@@ -78,11 +83,11 @@ public class SimulationOneRun {
 	 * @param b			platform related coefficient b
 	 * @return			updated avgTime
 	 */
-	public float calculateAvgProcessTime(float avgTime, float memspace){
+	public double calculateAvgProcessTime(double avgTime, double memspace){
 		return this.coefficient_k * avgTime / memspace + this.coefficient_b ;
 	}
 	
-	public static void setAvgProcessTime(float avgTime, int type){
+	public static void setAvgProcessTime(double avgTime, int type){
 		if (type==Type0){
 			avgTimeType0 = (int)avgTime;
 			System.out.println("avgTimeType0="+avgTimeType0);
@@ -108,8 +113,8 @@ public class SimulationOneRun {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				myJob = new Job[numJob];
 				Integer type;
-				float arrivingTime=0;
-				float servingLength;
+				double arrivingTime=0;
+				double servingLength;
 				for (int i = 0; i < 7; i++) {
 					System.out.println(br.readLine());
 				}// handling the blank line
@@ -128,7 +133,7 @@ public class SimulationOneRun {
 
 					//set the uniform arriving time
 					//arrivingTime = i
-					//		* ((float) arrivingPeriod / (float) numJob); // uniform distribution
+					//		* ((Double) arrivingPeriod / (Double) numJob); // uniform distribution
 					//myJob[i] = new Job(i, type, servingLength);
 					
 					//set the poisson arriving time			
@@ -170,9 +175,9 @@ public class SimulationOneRun {
 	}
 
 	
-	private float getExpNext(int randomNumber, float alpha) {
+	private double getExpNext(int randomNumber, double alpha) {
 		// TODO Auto-generated method stub
-		float servingLength = (float) (-1 * alpha * Math.log((float)(randomNumber)/10000));
+		double servingLength = (double) (-1 * alpha * Math.log((double)(randomNumber)/10000));
 		return servingLength;
 	}
 
@@ -184,9 +189,9 @@ public class SimulationOneRun {
 	* @param: alpha				The average service length in exponential distribution
 	* @return: servingLength	The serving time length for each job
 	*/ 
-	private float genServingLength(int randomNumber, int alpha) {
+	private double genServingLength(int randomNumber, int alpha) {
 		// TODO Auto-generated method stub
-		float servingLength = (float) (-1 * alpha * Math.log((float)(randomNumber)/10000));
+		double servingLength = (double) (-1 * alpha * Math.log((double)(randomNumber)/10000));
 		return servingLength;
 	}
 
@@ -197,9 +202,9 @@ public class SimulationOneRun {
 	* @param: maxServingLength	The maximum service length in uniform distribution 
 	* @return: servingLength	The serving time length for each job
 	*/ 
-	private float genUniformServingLength(int randomNumber, float maxServingLength) {
+	private double genUniformServingLength(int randomNumber, double maxServingLength) {
 		// TODO Auto-generated method stub
-		float servingLength = (float) (maxServingLength * (float)(randomNumber)/10000);
+		double servingLength = (double) (maxServingLength * (double)(randomNumber)/10000);
 		return servingLength;
 	}
 	
@@ -260,15 +265,15 @@ public class SimulationOneRun {
 	  while(true){		
 		//ceaselessly looking for the next event	  
 		//Categories:1. join queue, 2. finishing service
-		float nextArrivingEventTime; // get the next arriving event time
+		double nextArrivingEventTime; // get the next arriving event time
 		if (curArriving <numJob){
 			nextArrivingEventTime = myJob[curArriving].getArrivingTime();}
 		else{
-			nextArrivingEventTime = Float.MAX_VALUE;// all job are arrived
+			nextArrivingEventTime = Double.MAX_VALUE;// all job are arrived
 		}
 		
-		float nextType0FinishServingEventTime;
-		float nextType1FinishServingEventTime;
+		double nextType0FinishServingEventTime;
+		double nextType1FinishServingEventTime;
 		Integer nextType0ProcessorId;
 		Integer nextType1ProcessorId;
 		
@@ -279,7 +284,7 @@ public class SimulationOneRun {
 		nextType0FinishServingEventTime =  myProcessor[nextType0ProcessorId].getNextfinishingTime(); 
 		}else{
 		nextType0ProcessorId = null;
-		nextType0FinishServingEventTime = Float.MAX_VALUE; 	
+		nextType0FinishServingEventTime = Double.MAX_VALUE; 	
 		}
 		
 		if(numType1Processor>0){
@@ -289,7 +294,7 @@ public class SimulationOneRun {
 		nextType1FinishServingEventTime =  myProcessor[nextType1ProcessorId].getNextfinishingTime();
 		}else{
 		nextType1ProcessorId = null;
-		nextType1FinishServingEventTime = Float.MAX_VALUE;	
+		nextType1FinishServingEventTime = Double.MAX_VALUE;	
 		}
 		
 		//compare and get the nearest event 
@@ -307,11 +312,11 @@ public class SimulationOneRun {
 			
 			if (servedType0==null){
 				// if this processor's corresponding queue is empty, then the processor remains idle and finish the processing
-				myProcessor[nextType0ProcessorId].setNextfinishingTime(Float.MAX_VALUE);
+				myProcessor[nextType0ProcessorId].setNextfinishingTime(Double.MAX_VALUE);
 			break;
 			}else{
 				// update the state for both type0 job and processor
-				float finalTime = myProcessor[nextType0ProcessorId].getNextfinishingTime() + myJob[servedType0].getServingLength();
+				double finalTime = myProcessor[nextType0ProcessorId].getNextfinishingTime() + myJob[servedType0].getServingLength();
 				myJob[servedType0].setServingTime(myProcessor[nextType0ProcessorId].getNextfinishingTime());
 				myJob[servedType0].setLeavingTime(finalTime);
 				myJob[servedType0].setIsServed(true);
@@ -328,11 +333,11 @@ public class SimulationOneRun {
 			}
 			if (servedType1==null){
 				// if this agent's corresponding queue is empty, then the agent remains idle and finish the processing
-				myProcessor[nextType1ProcessorId].setNextfinishingTime(Float.MAX_VALUE);
+				myProcessor[nextType1ProcessorId].setNextfinishingTime(Double.MAX_VALUE);
 			break;
 			}else{
 				// update the state of both type1 job and processor
-				float finalTime = myProcessor[nextType1ProcessorId].getNextfinishingTime() + myJob[servedType1].getServingLength();
+				double finalTime = myProcessor[nextType1ProcessorId].getNextfinishingTime() + myJob[servedType1].getServingLength();
 				myJob[servedType1].setServingTime(myProcessor[nextType1ProcessorId].getNextfinishingTime());
 				myJob[servedType1].setLeavingTime(finalTime);				
 				myJob[servedType1].setIsServed(true);
@@ -351,7 +356,7 @@ public class SimulationOneRun {
 			curArriving += 1;
 			break;
 			}else{//update the state of both job and processor	
-				float finalTime = myJob[curArriving].getArrivingTime() + myJob[curArriving].getServingLength();
+				double finalTime = myJob[curArriving].getArrivingTime() + myJob[curArriving].getServingLength();
 				//System.out.println("finalTime:"+finalTime);
 				myJob[curArriving].setServingTime(myJob[curArriving].getArrivingTime());
 				myJob[curArriving].setLeavingTime(finalTime);
@@ -380,11 +385,11 @@ public class SimulationOneRun {
 	* @param: nextType1ServingEventTime		The nearest Type1 Processor finishing event time
 	* @return: Eventid							The nearest event id
 	*/ 
-	private int getNextEvent(float nextArrivingEventTime,
-		float nextType0ServingEventTime, float nextType1ServingEventTime) {
+	private int getNextEvent(double nextArrivingEventTime,
+		double nextType0ServingEventTime, double nextType1ServingEventTime) {
 	// if no more arriving event happens 	
 	//System.out.println(""+nextArrivingEventTime+"\t"+nextType0ServingEventTime+"\t"+nextType1ServingEventTime+"\n");
-	if (nextArrivingEventTime == Float.MAX_VALUE){
+	if (nextArrivingEventTime == Double.MAX_VALUE){
 		//only compare the job finishing event
 		if (nextType0ServingEventTime <= nextType1ServingEventTime){ 
 			return Type0;}
@@ -402,9 +407,9 @@ public class SimulationOneRun {
 	}
 
 /*	
-	private int getNextEvent(float nextArrivingEventTime,
-			float nextType0ServingEventTime, float nextType1ServingEventTime) {
-		HashMap h = new HashMap<Integer, Float>();
+	private int getNextEvent(double nextArrivingEventTime,
+			double nextType0ServingEventTime, double nextType1ServingEventTime) {
+		HashMap h = new HashMap<Integer, Double>();
 		h.put(ARRIVING,nextArrivingEventTime);
 		h.put(Type0,nextType0ServingEventTime);
 		h.put(Type1,nextType1ServingEventTime);

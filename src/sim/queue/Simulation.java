@@ -21,10 +21,21 @@ public class Simulation {
 	*/ 
 	public static void main(String argv[]) {
 		
-		//QueueAdapter qa = new QueueAdapter(double y, double u, double y_updated);
+		double ref_d = 10;   //10s response
+		//last time output deltad
+		double init_m = 4;   //4M RAM
+		
+		double delta_d=1;
+		//last time input deltam
+		double delta_m=1;
+		//this time output deltad
+		double delta_d_new=1;
+		
+		QueueAdapter qa = new QueueAdapter(delta_d, delta_m, delta_d_new);
 		
 		for (int i=0; i<10; i++){
-		SimulationOneRun sm = new SimulationOneRun();
+			
+		SimulationOneRun sm = new SimulationOneRun(init_m);
 		// generate passenger
 		sm.generateJob();
 		// set strategy
@@ -32,13 +43,13 @@ public class Simulation {
 		sm.setStrategy(sm.CENTER2);
 		// doing simulation
 		sm.simulation();
-		System.out.println("numCandianAgent = "+ sm.numType0Processor +"\t" + "numVisitorAgent = " + sm.numType1Processor+ "\n");
+		System.out.println("numType0Processor = "+ sm.numType0Processor +"\t" + "numType1Processor = " + sm.numType1Processor+ "\n");
 		// output the result
-		float meanResponseTime = SimulationAnalyzer.analyzeJob(sm.myJob, sm.numJob);
+		double meanResponseTime = SimulationAnalyzer.analyzeJob(sm.myJob, sm.numJob);
 		
 		
 		
-		float avgTime = sm.calculateAvgProcessTime(SimulationOneRun.avgTimeType0, 1000*i);
+		double avgTime = sm.calculateAvgProcessTime(SimulationOneRun.avgTimeType0, 1000*i);
 		
 		//System.out.println("avgTime="+avgTimeType0+"\n");
 		SimulationOneRun.setAvgProcessTime(avgTime, SimulationOneRun.Type0);
