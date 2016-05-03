@@ -27,7 +27,7 @@ public static double analyzeJob(Job[] myJob, Integer numJob) {
 		totalResponseTime = totalResponseTime + (myJob[i].getLeavingTime() - myJob[i].getArrivingTime());
 	}
 	meanResponseTime = totalResponseTime / numJob;
-	System.out.println("meanResponseTime = " + meanResponseTime + "\n");
+	//System.out.println("meanResponseTime = " + meanResponseTime + "\n");
 	return meanResponseTime;
 }
 

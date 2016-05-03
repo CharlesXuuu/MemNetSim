@@ -46,8 +46,11 @@ public class SimulationOneRun {
 	public static final int Type0 = 0; //Define the type0 job, and their processing event  
 	public static final int Type1 = 1;  //Define the type1 job, and their processing event
 	public static final int ARRIVING = 2; //Define the arriving event
+	public static final double avgTimeType0_init = 6; // Average time for processing a Type0 job
 	public static double avgTimeType0 = 6; // Average time for processing a Type0 job
-	public static double avgTimeType1 = 75; // Average time for processing a Type1 job
+	public static final double avgTimeType1_init = 6; // Average time for processing a Type1 job
+	public static double avgTimeType1 = 6; // Average time for processing a Type1 job
+
 	public static final double ratio = 1; // ratio of Type0 Job
 	
 	
@@ -70,8 +73,10 @@ public class SimulationOneRun {
 	private double coefficient_b= (Double)4.0;  //31.46;
 	private double memory;
 	
-	public SimulationOneRun(double init_m) {
-		this.memory = init_m;   //
+	public SimulationOneRun(double memory) {
+		this.memory = memory;   //
+		setAvgProcessTime(calculateAvgProcessTime(avgTimeType0,memory), SimulationOneRun.Type0);
+		//System.out.println("Currently avgTimeType0="+avgTimeType0);
 	}
 
 	/**
@@ -116,7 +121,8 @@ public class SimulationOneRun {
 				double arrivingTime=0;
 				double servingLength;
 				for (int i = 0; i < 7; i++) {
-					System.out.println(br.readLine());
+					br.readLine();
+					//System.out.println(br.readLine());
 				}// handling the blank line
 
 				for (int i = 0; i < numJob; i++) {
