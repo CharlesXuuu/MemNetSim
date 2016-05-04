@@ -58,7 +58,7 @@ public class SimulationOneRun {
 	// Simulation Parameters
 	public Integer strategy = CENTER2;  //The default strategy
 	public Integer arrivingPeriod =  20 * 60; //The arriving period
-	public Integer numJob = 100; //The default job number
+	public Integer numJob = 10; //The default job number
 	public Integer numProcessor = 16; // The total processor number
 	public Integer numType0Processor = 16;  // The type0 processor number
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
@@ -95,7 +95,7 @@ public class SimulationOneRun {
 	public static void setAvgProcessTime(double avgTime, int type){
 		if (type==Type0){
 			avgTimeType0 = (int)avgTime;
-			System.out.println("avgTimeType0="+avgTimeType0);
+			//System.out.println("avgTimeType0="+avgTimeType0);
 		}
 		
 		if (type==Type1){

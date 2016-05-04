@@ -52,9 +52,11 @@ public class Simulation {
 		QueueAdapter qa = new QueueAdapter(delta_d_old, delta_m, ref_d-meanResponseTime);
 		delta_m = qa.adjustFeedback();
 		
-		System.out.println("meanResponseTime="+meanResponseTime);
+		System.out.print(""+meanResponseTime+"\t");
 		delta_d_old  = ref_d-meanResponseTime;
 		}
+		
+
 		
 		
 	}
