@@ -58,7 +58,7 @@ public class SimulationOneRun {
 	// Simulation Parameters
 	public Integer strategy = CENTER2;  //The default strategy
 	public Integer arrivingPeriod =  20 * 60; //The arriving period
-	public Integer numJob = 10; //The default job number
+	public Integer numJob = 100; //The default job number
 	public Integer numProcessor = 16; // The total processor number
 	public Integer numType0Processor = 16;  // The type0 processor number
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
@@ -120,7 +120,9 @@ public class SimulationOneRun {
 				Integer type;
 				double arrivingTime=0;
 				double servingLength;
-				for (int i = 0; i < 7; i++) {
+				int randomNum = (int) (Math.random()*9000);
+				
+				for (int i = 0; i < 7+randomNum; i++) {
 					br.readLine();
 					//System.out.println(br.readLine());
 				}// handling the blank line
@@ -163,7 +165,7 @@ public class SimulationOneRun {
 					randomNumber = Integer.parseInt(br.readLine().replaceAll(
 							"\\s", ""));
 					if (myJob[i].getType() == Type0){
-					servingLength = genUniformServingLength(randomNumber, avgTimeType0);
+					servingLength = genUniformServingLength(randomNumber, 2*avgTimeType0);
 					myJob[i].setServingLength(servingLength);
 					} else if (myJob[i].getType() == Type1){
 					servingLength = genUniformServingLength(randomNumber, avgTimeType1);
