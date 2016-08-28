@@ -46,9 +46,11 @@ public class SimulationOneRun {
 	public static final int Type0 = 0; //Define the type0 job, and their processing event  
 	public static final int Type1 = 1;  //Define the type1 job, and their processing event
 	public static final int ARRIVING = 2; //Define the arriving event
-	public static final double avgTimeType0_init = 6; // Average time for processing a Type0 job
+	
+	public static double avgTimeType0_default = 6;
 	public static double avgTimeType0 = 6; // Average time for processing a Type0 job
-	public static final double avgTimeType1_init = 6; // Average time for processing a Type1 job
+
+	public static double avgTimeType1_default = 6;
 	public static double avgTimeType1 = 6; // Average time for processing a Type1 job
 
 	public static final double ratio = 1; // ratio of Type0 Job
@@ -64,18 +66,27 @@ public class SimulationOneRun {
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
 	public Integer numQueue; // The queue number
 	public double avgTimeArriving = 15; //Average Interarrival time for Poisson distribution
-	 
+	
 	public Job[] myJob;
 	private WaitingQueue[] myWaitingQueue;
 	private Processor[] myProcessor;
 
-	private double coefficient_k= (Double)20.0; //113.24;
-	private double coefficient_b= (Double)4.0;  //31.46;
+	private double coefficient_w= (Double)20.0; //113.24;
+	private double coefficient_v= (Double)4.0;  //31.46;
+
+	public double getCoefficient_w() {
+		return coefficient_w;
+	}
+
+	public double getCoefficient_v() {
+		return coefficient_v;
+	}
+
 	private double memory;
 	
 	public SimulationOneRun(double memory) {
 		this.memory = memory;   //
-		setAvgProcessTime(calculateAvgProcessTime(avgTimeType0,memory), SimulationOneRun.Type0);
+		setAvgProcessTime(calculateAvgProcessTime(avgTimeType0_default,memory), SimulationOneRun.Type0);
 		//System.out.println("Currently avgTimeType0="+avgTimeType0);
 	}
 
@@ -89,8 +100,24 @@ public class SimulationOneRun {
 	 * @return			updated avgTime
 	 */
 	public double calculateAvgProcessTime(double avgTime, double memspace){
-		return this.coefficient_k * avgTime / memspace + this.coefficient_b ;
+		double tmp=this.coefficient_w * avgTime / memspace + this.coefficient_v;
+		//System.out.println("actual:"+tmp+"\n");
+		return this.coefficient_w * avgTime / memspace + this.coefficient_v ;
 	}
+	
+	public double getLambda(){
+		//calculating interarrival rate
+		double sum=0;
+		double interarrivaltime;
+		
+		for(int i=0; i<myJob.length-1;i++){
+			sum += (myJob[i+1].getArrivingTime()-myJob[i].getArrivingTime());
+		}
+		interarrivaltime = sum/(myJob.length-1);
+		
+		return 1/interarrivaltime;
+	}
+	
 	
 	public static void setAvgProcessTime(double avgTime, int type){
 		if (type==Type0){
@@ -158,6 +185,7 @@ public class SimulationOneRun {
 					arrivingTime = arrivingTime + getExpNext(randomNumber,avgTimeArriving);
 					myJob[i].setArrivingTime(arrivingTime);
 				}
+				
 				
 				
 				for (int i=0; i<numJob; i++){
