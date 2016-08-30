@@ -60,13 +60,21 @@ public class SimulationOneRun {
 	// Simulation Parameters
 	public Integer strategy = CENTER2;  //The default strategy
 	public Integer arrivingPeriod =  20 * 60; //The arriving period
-	public Integer numJob = 100; //The default job number
+	public Integer numJob = 50; //The default job number
 	public Integer numProcessor = 16; // The total processor number
 	public Integer numType0Processor = 16;  // The type0 processor number
 	public Integer numType1Processor = numProcessor - numType0Processor; // The type1 processor number
 	public Integer numQueue; // The queue number
 	public double avgTimeArriving = 15; //Average Interarrival time for Poisson distribution
 	
+	public double getAvgTimeArriving() {
+		return avgTimeArriving;
+	}
+
+	public void setAvgTimeArriving(double avgTimeArriving) {
+		this.avgTimeArriving = avgTimeArriving;
+	}
+
 	public Job[] myJob;
 	private WaitingQueue[] myWaitingQueue;
 	private Processor[] myProcessor;
